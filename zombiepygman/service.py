@@ -1,9 +1,21 @@
 from twisted.application.internet import TCPClient, TCPServer
 from twisted.application.service import Application, MultiService
-from twisted.internet.protocol import Factory
+from twisted.internet import protocol
+from twisted.internet import reactor
 from twisted.python import log
+
 from twisted.web.server import Site
 from zombiepygman.web_api.urls import API
+
+class NotchianProcessProtocol(protocol.ProcessProtocol):
+
+    def outReceived(self, data):
+        print data
+        #log.msg(data)
+
+    def errReceived(self, data):
+        print data
+        #log.err(data)
 
 class ZombiePygManWebAPIService(MultiService):
 
@@ -20,21 +32,28 @@ class ZombiePygManWebAPIService(MultiService):
 
     def configure_services(self):
 
-        #if section.startswith("world "):
-        #    factory = BravoFactory(section[6:])
-        #    server = TCPServer(factory.port, factory,
-        #        interface=factory.interface)
-        #    server.setName(factory.name)
-        #    self.addService(server)
-        #    self.factorylist.append(factory)
-
         factory = Site(API)
         port = 8000
         server = TCPServer(port, factory)
         server.setName("web")
         self.addService(server)
 
-service = ZombiePygmanWebAPIService()
-
 application = Application("ZombiePygman")
+
+service = ZombiePygManWebAPIService()
 service.setServiceParent(application)
+
+
+
+def whenRunning():
+    notchian_proto = NotchianProcessProtocol()
+    transport = reactor.spawnProcess(
+    notchian_proto, "/usr/bin/java",
+        [
+            "blarty",
+            "-jar",
+            "/Users/gtaylor/Documents/workspace/zombiepygman/minecraft_server.jar",
+            "nogui"
+        ], {}
+    )
+reactor.callWhenRunning(whenRunning)

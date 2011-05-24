@@ -11,4 +11,4 @@ URL assembly.
 """
 API = APIResource()
 
-API.register('POST', '^/job/submit', JobSubmitView)
+API.register('GET', '^/job/submit', JobSubmitView)
