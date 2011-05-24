@@ -1,0 +1,1 @@
+from zombiepygman.service import application
