@@ -2,6 +2,7 @@ from twisted.internet import reactor
 from zombiepygman.notchian_wrapper.protocol import NotchianProcessProtocol
 
 class NotchianProcess(object):
+    # IProcessTransport instance.
     transport = None
 
     @classmethod
@@ -26,4 +27,3 @@ class NotchianProcess(object):
             env={},
             usePTY=True,
         )
-        print "TRANNY", cls.transport
