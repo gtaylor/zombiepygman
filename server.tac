@@ -1,1 +1,1 @@
-from zombiepygman.service import application
+from zombiepygman.server import application

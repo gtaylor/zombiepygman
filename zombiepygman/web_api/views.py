@@ -3,6 +3,9 @@ import simplejson
 from zombiepygman.web_api.base_views import BaseView
 
 class JobSubmitView(BaseView):
+    """
+    A test view.
+    """
     def view(self):
         print "REQ", self.request.args
         print "KW", self.kwargs
