@@ -1,28 +1,29 @@
 from twisted.internet import reactor
 from zombiepygman.notchian_wrapper.protocol import NotchianProcessProtocol
 
-# This will contain the transport instance, used for writing to/from
-# the Minecraft process.
-transport = None
+class NotchianProcess(object):
+    transport = None
 
-def start_minecraft_server():
-    """
-    Handles starting the Minecraft process and populating the module's transport
-    variable.
-    """
-    global transport
+    @classmethod
+    def start_minecraft_server(cls):
+        """
+        Handles starting the Minecraft process and populating the module's transport
+        variable.
+        """
+        # TODO: Set these via configs.
+        java_bin = "java"
+        process_name = "minecraft"
 
-    # TODO: Set these via configs.
-    java_bin = "java"
-    process_name = "minecraft"
-
-    transport = reactor.spawnProcess(
-        NotchianProcessProtocol(),
-        java_bin,
-            [
+        cls.transport = reactor.spawnProcess(
+            NotchianProcessProtocol(),
+            java_bin,
+            args=[
                 process_name,
                 "-jar",
                 "minecraft_server.jar",
                 "nogui"
-            ], {}
-    )
+            ],
+            env={},
+            usePTY=True,
+        )
+        print "TRANNY", cls.transport

@@ -1,7 +1,7 @@
 from twisted.application.service import Application
 from twisted.internet import reactor
 from zombiepygman.web_api.service import ZombiePygManWebAPIService
-from zombiepygman.notchian_wrapper.process import start_minecraft_server
+from zombiepygman.notchian_wrapper.process import NotchianProcess
 
 application = Application("ZombiePygman")
 
@@ -12,4 +12,4 @@ service.setServiceParent(application)
 
 # Runs the java -jar minecraft_server.jar command in a separate process.
 # Sets up a transport in notchian_wrapper.process.transport.
-reactor.callWhenRunning(start_minecraft_server)
+reactor.callWhenRunning(NotchianProcess.start_minecraft_server)
