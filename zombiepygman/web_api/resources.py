@@ -51,6 +51,7 @@ class CmdListConnected(JSONResourceMixin):
             out of stdout.
         """
         self.context['player_list'] = player_list
+        request.setHeader('Content-Type', 'application/json')
         request.write(self.get_context_json())
         # Un-block the client and return the result.
         request.finish()
