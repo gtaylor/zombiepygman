@@ -33,7 +33,7 @@ class CmdListConnected(JSONResourceMixin):
         """
         # Pipes the 'list' command into the Minecraft server's stdin, adds
         # returns a deferred to add a callback to received the results.
-        deferred_func = NotchianProcess.protocol.listPlayers()
+        deferred_func = NotchianProcess.protocol.cmd_list_players()
         # Once we have the output from stdout, this callback is called, which
         # will request.write() and request.finish().
         deferred_func.addCallback(self._player_list_callback, request)

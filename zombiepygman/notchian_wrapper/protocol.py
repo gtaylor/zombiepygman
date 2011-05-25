@@ -1,6 +1,7 @@
 """
 The protocol for communicating with the running Minecraft process.
 """
+from twisted.python import log
 from twisted.internet import protocol, defer, reactor
 from zombiepygman.notchian_wrapper.unsafe_store import PlayerListStore
 
@@ -33,7 +34,7 @@ class NotchianProcessProtocol(protocol.ProcessProtocol):
         print "quitting"
         reactor.stop()
 
-    def listPlayers(self):
+    def cmd_list_players(self):
         """
         Pipes in a 'list' command to the interactive Minecraft server PTY.
         Returns the result via a deferred.
@@ -47,12 +48,12 @@ class NotchianProcessProtocol(protocol.ProcessProtocol):
         self._player_list_deferreds.append(deferred)
         
         # Pipe the 'list' command into the Minecraft server's stdin.
-        self.transport.write("list\n")
+        self.send_mc_command('list')
 
         # Get the deferred we just appended.
         return deferred
 
-    def parseLines(self, data):
+    def _parse_lines(self, data):
         """
         Splits a raw string into a list of separate lines.
 
@@ -69,8 +70,9 @@ class NotchianProcessProtocol(protocol.ProcessProtocol):
         :param str bytes: The data received from stdout.
         """
         outbuffer = self.outbuffer + bytes
+        print bytes
         #lines, leftover = self.parseLines(outbuffer)
-        lines = self.parseLines(outbuffer)
+        lines = self._parse_lines(outbuffer)
         #self.outbuffer = leftover
 
         for line in lines:
@@ -83,3 +85,12 @@ class NotchianProcessProtocol(protocol.ProcessProtocol):
                 # Need to get the first deferred from the pending stack,
                 # since that is the oldest outstanding request.
                 self._player_list_deferreds.pop(0).callback(line)
+
+    def send_mc_command(self, command_str):
+        """
+        Convenience method for sending a command
+
+        :param str command_str: The command to send to the Minecraft server,
+            without \n or \r sequences on the end.
+        """
+        self.transport.write("%s\n" % command_str)
