@@ -4,6 +4,7 @@ from zombiepygman.notchian_wrapper.protocol import NotchianProcessProtocol
 class NotchianProcess(object):
     # IProcessTransport instance.
     transport = None
+    protocol = None
 
     @classmethod
     def start_minecraft_server(cls):
@@ -14,9 +15,10 @@ class NotchianProcess(object):
         # TODO: Set these via configs.
         java_bin = "java"
         process_name = "minecraft"
+        cls.protocol = NotchianProcessProtocol()
 
         cls.transport = reactor.spawnProcess(
-            NotchianProcessProtocol(),
+            cls.protocol,
             java_bin,
             args=[
                 process_name,
