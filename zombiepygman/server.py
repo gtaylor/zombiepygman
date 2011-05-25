@@ -1,3 +1,13 @@
+"""
+The top-most bit of code that ties everything together into one runnable
+server process. The two important parts here are:
+
+* The RESTful JSON API that runs under twisted.web. This is primarily used
+  to pipe commands into the Minecraft process from websites or other
+  applications.
+* The Minecraft server process whose stdin we can pipe commands into, and whose
+  stdout we can monitor for activity.
+"""
 from twisted.application.service import Application
 from twisted.internet import reactor
 from zombiepygman.web_api.service import ZombiePygManWebAPIService
