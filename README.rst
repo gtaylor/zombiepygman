@@ -37,8 +37,8 @@ This is currently a little rough, but this will get you running.
 
 * Download or ``git clone`` the repository. Extract it where you'd like to
   run your Minecraft server from.
-* Download minecraft_server.jar, toss it in the root level zombiepygman
-  directory (not ``zombiepygman/zombiepygman``).
+* Download minecraft_server.jar, toss it in the root level
+  minecraft_server directory.
 * Run ``java -jar minecraft_server.jar`` once to get all of the config
   and support files created. Stop the server.
 * Start zombiepygman: ``twistd -ny server.tac``. If you want to run in
