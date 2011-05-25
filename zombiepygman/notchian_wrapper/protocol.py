@@ -1,7 +1,7 @@
 """
 The protocol for communicating with the running Minecraft process.
 """
-from twisted.internet import protocol, defer
+from twisted.internet import protocol, defer, reactor
 from zombiepygman.notchian_wrapper.unsafe_store import PlayerListStore
 
 class NotchianProcessProtocol(protocol.ProcessProtocol):
