@@ -87,30 +87,46 @@ class NotchianProcessProtocol(protocol.ProcessProtocol):
             if str(datetime.date.today().year) != year:
                 continue
 
-            # Get the text after the year/timestamp.
-            line_nodate = line[19:].strip()
-            if line_nodate.startswith('['):
-                # This probably has a tag, like [INFO]. Almost everything
-                # does, so this is where most things fall.
-                split = line_nodate.split()
-                # [INFO]
-                tag = split[0]
-                # The meat of the output message.
-                output = ' '.join(split[1:])
+            self._parse_connected_players_output(line)
+
+    def _parse_connected_players_output(self, line):
+        """
+        Since we have already identified ``line`` as a Connected players line,
+        this method parses it and returns the callback for the web API.
+        """
+        # Get the text after the year/timestamp.
+        line_nodate = line[19:].strip()
+        if line_nodate.startswith('['):
+            # This probably has a tag, like [INFO]. Almost everything
+            # does, so this is where most things fall.
+            split = line_nodate.split()
+            # [INFO]
+            tag = split[0]
+            # The meat of the output message.
+            output = ' '.join(split[1:])
+        else:
+            # There's no [INFO] or other tag, leave this be.
+            tag = None
+            output = line_nodate
+
+        # Watch for some key strings that that only happen when a sever
+        # command is piped into stdin.
+        if output.startswith('Connected players:'):
+            # Found the output of the 'list' command. This happened as
+            # a result of web_api.resources.CmdListConnected being hit.
+
+            # Get the text after 'Connected players:'.
+            player_str = output[18:]
+            if not player_str:
+                # No players connected.
+                players = []
             else:
-                # There's no [INFO] or other tag, leave this be.
-                tag = None
-                output = line_nodate
+                # Players found. Make a player list to return.
+                players = player_str.replace(' ', '').split(',')
 
-            # Watch for some key strings that that only happen when a sever
-            # command is piped into stdin.
-            if output.startswith('Connected players:'):
-                # Found the output of the 'list' command. This happened as
-                # a result of web_api.resources.CmdListConnected being hit.
-
-                # Need to get the first deferred from the pending stack,
-                # since that is the oldest outstanding request.
-                self._player_list_deferreds.pop(0).callback(line)
+            # Need to get the first deferred from the pending stack,
+            # since that is the oldest outstanding request.
+            self._player_list_deferreds.pop(0).callback(players)
 
     def send_mc_command(self, command_str):
         """

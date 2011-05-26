@@ -22,7 +22,7 @@ class CmdListConnected(JSONResourceMixin):
     JSON Payload keys
     -----------------
 
-    * player_list - The list of connected players.
+    * player_list (list): The list of connected players.
     """
     def render_GET(self, request):
         """
