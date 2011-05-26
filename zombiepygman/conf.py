@@ -22,13 +22,13 @@ class SettingsStore(object):
         # directory that contains config.py by default.
         self._calc_conf('ROOT_DIR', self.__get_default_root_dir())
         # The port to run the JSON API on.
-        self._calc_conf('API_PORT', 8000)
+        self._calc_conf('API_PORT', 8001)
         # The delay (in seconds) to from the time the 'stop' JSON API call is
         # made, to the point where the server is actually shut down. An
         # announcement is made via 'say' to let the players know things are
         # going down. This can be 0, but it's more informative if the players
         # know why their client suddenly errored out.
-        self._calc_conf('DEFAULT_SHUTDOWN_DELAY', 1.0)
+        self._calc_conf('DEFAULT_SHUTDOWN_DELAY', 5.0)
         # This is a really really low-fi attempt at at least not hanging the
         # API's ass out the window. If this is a None value at start time,
         # zombiepygman will terminate and nag the user.

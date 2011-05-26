@@ -11,3 +11,4 @@ server.log
 server.properties
 white-list.txt
 world
+config.py
