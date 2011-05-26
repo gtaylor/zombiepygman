@@ -63,7 +63,7 @@ class CmdPipingResource(Resource):
     Path: /cmd/*
     """
     def getChild(self, path, request):
-        if path == 'list':
+        if path == 'listconnected':
             return CmdListConnected()
         else:
             return NoResource()
