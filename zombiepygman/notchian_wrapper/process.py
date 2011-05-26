@@ -8,7 +8,9 @@ cascade into reactor.stop().
 import os
 import signal
 from twisted.internet import reactor
+from twisted.python import log
 from zombiepygman.notchian_wrapper.protocol import NotchianProcessProtocol
+from zombiepygman.conf import settings
 
 class NotchianProcess(object):
     """
@@ -25,45 +27,25 @@ class NotchianProcess(object):
         Handles starting the Minecraft process and populating the
         cls.protocol attribute.
         """
-        # TODO: Set these via configs.
-        java_bin = "java"
-        process_name = "minecraft"
+        process_name = "zombiepygman"
+        startup_args = [settings.PROCESS_NAME]
+        startup_args += settings.JAVA_FLAGS + ['-jar']
+        startup_args += [settings.MINECRAFT_SERVER_JAR_PATH] + ['nogui']
+        
         cls.protocol = NotchianProcessProtocol()
-
+        start_command_str = ' '.join(startup_args[1:])
+        log.msg('Starting Minecraft with: java %s' % start_command_str)
         reactor.spawnProcess(
             cls.protocol,
-            java_bin,
-            args=[
-                process_name,
-                "-jar",
-                "minecraft_server.jar",
-                "nogui"
-            ],
+            settings.JAVA_BIN_PATH,
+            args=startup_args,
             env={},
-            path=cls.determine_minecraft_server_dir(),
+            path=settings.MINECRAFT_SERVER_DATA_DIR,
             usePTY=True,
         )
 
     @classmethod
-    def determine_minecraft_server_dir(cls):
-        """
-        Returns the full path to the minecraft_server dir that contains
-        minecraft_server.jar and its support files.
-
-        ..todo:: Make this configurable?
-        
-        :rtype: str
-        :returns: The path to the minecraft_server directory.
-        """
-        this_file_path = os.path.abspath(__file__)
-        this_dir_path = os.path.dirname(this_file_path)
-        package_path = os.path.dirname(this_dir_path)
-        root_path = os.path.dirname(package_path)
-        retval = os.path.join(root_path, 'minecraft_server')
-        return retval
-
-    @classmethod
-    def stop_minecraft_server(cls, wait_secs=5):
+    def stop_minecraft_server(cls, wait_secs=None):
         """
         Announces impending shutdown, then stops the Minecraft server process,
         consequently bringing the zombiepygman daemon down too.
@@ -74,6 +56,7 @@ class NotchianProcess(object):
             mistaken for connection issues due to the undescriptive error
             messages on the client.
         """
+        wait_secs = settings.DEFAULT_SHUTDOWN_DELAY or wait_secs
         announcement = 'say Server is going down in %d seconds.' % wait_secs
         cls.protocol.send_mc_command(announcement)
         # After however long a wait specified, issue the shutdown command.
@@ -86,7 +69,14 @@ class NotchianProcess(object):
         the Minecraft server. Allows time for announcing the shutdown,
         saving the world, and letting everything wrap up.
         """
-        cls.stop_minecraft_server()
+        try:
+            cls.stop_minecraft_server()
+        except AttributeError:
+            # The server didn't fully start, we'll have to just manually
+            # stop the reactor here.
+            log.err("Server didn't fully start. Stopping the reactor "\
+                    "manually.")
+            reactor.stop()
 
 """
 Signal handling

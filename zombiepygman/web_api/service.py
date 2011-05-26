@@ -5,6 +5,7 @@ from twisted.application.service import MultiService
 from twisted.application.internet import TCPServer
 from twisted.web.server import Site
 from zombiepygman.web_api.resources import APIResource
+from zombiepygman.conf import settings
 
 class ZombiePygManWebAPIService(MultiService):
     """
@@ -29,8 +30,7 @@ class ZombiePygManWebAPIService(MultiService):
         root = APIResource()
         factory = Site(root)
         
-        # TODO: Make this configurable.
-        port = 8000
+        port = settings.API_PORT
         server = TCPServer(port, factory)
-        server.setName("web")
+        server.setName("WebAPI")
         self.addService(server)

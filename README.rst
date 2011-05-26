@@ -39,8 +39,8 @@ This is currently a little rough, but this will get you running.
   run your Minecraft server from.
 * Download minecraft_server.jar, toss it in the root level
   minecraft_server directory.
-* Run ``java -jar minecraft_server.jar`` once to get all of the config
-  and support files created. Stop the server.
+* Copy ``config_example.py`` to ``config.py`` in your root zombiepygman
+  directory. Edit the value for ``API_SECURITY_TOKEN`` at the very least.
 * Start zombiepygman: ``twistd -ny server.tac``. If you want to run in
   daemon mode, omit the 'n': ``twistd -y server.tac``.
 * Your JSON API is available on port 8000 by default.
