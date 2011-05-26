@@ -35,6 +35,8 @@ Installation
 
 This is currently a little rough, but this will get you running.
 
+* Install requirements: ``pip install -r requirements.txt``
+* If you don't have pip: ``easy_install twisted simplejson``
 * Download or ``git clone`` the repository. Extract it where you'd like to
   run your Minecraft server from.
 * Download minecraft_server.jar, toss it in the root level
@@ -43,7 +45,7 @@ This is currently a little rough, but this will get you running.
   directory. Edit the value for ``API_SECURITY_TOKEN`` at the very least.
 * Start zombiepygman: ``twistd -ny server.tac``. If you want to run in
   daemon mode, omit the 'n': ``twistd -y server.tac``.
-* Your JSON API is available on port 8000 by default.
+* Your JSON API is available on port 8001 by default.
 
 Support
 -------
