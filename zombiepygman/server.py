@@ -17,6 +17,19 @@ from zombiepygman.web_api.service import ZombiePygManWebAPIService
 from zombiepygman.notchian_wrapper.process import NotchianProcess
 from zombiepygman.conf import settings
 
+# The data dir holds server settings, the white-list, the world data, and etc.
+if not os.path.exists(settings.MINECRAFT_SERVER_DATA_DIR):
+    log.err("ERROR: The directory you specified in your "\
+            "settings.MINECRAFT_SERVER_DATA_DIR doesn't exist:")
+    log.err("  %s" % settings.MINECRAFT_SERVER_DATA_DIR)
+    sys.exit(1)
+
+# Minecraft server's Java archive file. Can't go far without this.
+if not os.path.exists(settings.MINECRAFT_SERVER_JAR_PATH):
+    log.err("ERROR: The minecraft_server.jar you specified in your "\
+            "settings.MINECRAFT_SERVER_JAR_PATH can't be found.")
+    sys.exit(1)
+
 if settings.API_SECURITY_ENABLED is False:
     # A stern warning.
     log.err("WARNING: API security is disabled. Open season.")
@@ -27,13 +40,6 @@ if settings.API_SECURITY_ENABLED and settings.API_SECURITY_TOKEN == None:
     log.err("ERROR: You have not set a new value for API_SECURITY_TOKEN in"\
             "your conf.py. Do that now, then start zombiepygman again.")
     log.err("ERROR: zombiepygman startup aborted.")
-    sys.exit(1)
-
-# The data dir holds server settings, the white-list, the world data, and etc.
-if not os.path.exists(settings.MINECRAFT_SERVER_DATA_DIR):
-    log.err("ERROR: The directory you specified in your "\
-            "config.MINECRAFT_SERVER_DATA_DIR doesn't exist:")
-    log.err("  %s" % settings.MINECRAFT_SERVER_DATA_DIR)
     sys.exit(1)
 
 application = Application("ZombiePygman")
