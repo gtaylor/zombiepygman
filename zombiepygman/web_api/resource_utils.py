@@ -59,6 +59,10 @@ class AuthenticationMixin(Resource):
         :rtype: bool
         :returns: True if the security token is valid, false if not.
         """
+        if not settings.API_SECURITY_ENABLED:
+            # Security disabled, everyone gets in.
+            return True
+
         token = request.args.get('security_token', [''])
         return str(settings.API_SECURITY_TOKEN) == token[0]
 

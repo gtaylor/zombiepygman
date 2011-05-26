@@ -1,6 +1,7 @@
 """
 The protocol for communicating with the running Minecraft process.
 """
+import datetime
 from twisted.python import log
 from twisted.internet import protocol, defer, reactor
 
@@ -74,9 +75,36 @@ class NotchianProcessProtocol(protocol.ProcessProtocol):
         #self.outbuffer = leftover
 
         for line in lines:
+            # We're only interested in Connected players output for now.
+            if 'Connected players:' not in line:
+                continue
+
+            # On almost every message, first four characters are the year.
+            year = line[:4]
+            # This is a silly/lazy way of seeing if this is interesting
+            # output, without having to write a real parser.
+            # TODO: Write a real stdout parser.
+            if str(datetime.date.today().year) != year:
+                continue
+
+            # Get the text after the year/timestamp.
+            line_nodate = line[19:].strip()
+            if line_nodate.startswith('['):
+                # This probably has a tag, like [INFO]. Almost everything
+                # does, so this is where most things fall.
+                split = line_nodate.split()
+                # [INFO]
+                tag = split[0]
+                # The meat of the output message.
+                output = ' '.join(split[1:])
+            else:
+                # There's no [INFO] or other tag, leave this be.
+                tag = None
+                output = line_nodate
+
             # Watch for some key strings that that only happen when a sever
             # command is piped into stdin.
-            if '[INFO] Connected players:' in line:
+            if output.startswith('Connected players:'):
                 # Found the output of the 'list' command. This happened as
                 # a result of web_api.resources.CmdListConnected being hit.
 

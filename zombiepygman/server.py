@@ -17,9 +17,13 @@ from zombiepygman.web_api.service import ZombiePygManWebAPIService
 from zombiepygman.notchian_wrapper.process import NotchianProcess
 from zombiepygman.conf import settings
 
+if settings.API_SECURITY_ENABLED is False:
+    # A stern warning.
+    log.err("WARNING: API security is disabled. Open season.")
+
 # They need to set this to something, or we'll have a bunch of people running
 # around with wide-open API servers.
-if settings.API_SECURITY_TOKEN == None:
+if settings.API_SECURITY_ENABLED and settings.API_SECURITY_TOKEN == None:
     log.err("ERROR: You have not set a new value for API_SECURITY_TOKEN in"\
             "your conf.py. Do that now, then start zombiepygman again.")
     log.err("ERROR: zombiepygman startup aborted.")

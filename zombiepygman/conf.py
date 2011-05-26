@@ -33,6 +33,9 @@ class SettingsStore(object):
         # API's ass out the window. If this is a None value at start time,
         # zombiepygman will terminate and nag the user.
         self._calc_conf('API_SECURITY_TOKEN', None)
+        # If this is True, check security tokens for validity. If False, it's
+        # open season on your server. Be careful here, obviously.
+        self._calc_conf('API_SECURITY_ENABLED', True)
         # The path to your java binary.
         self._calc_conf('JAVA_BIN_PATH', 'java')
         # Flags to use with the 'java' command during startup. For example,
