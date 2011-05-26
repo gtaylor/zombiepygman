@@ -21,17 +21,16 @@ class NotchianProcessProtocol(protocol.ProcessProtocol):
         print "stderr: %s" % data
 
     def inConnectionLost(self):
-        print "inConnectionLost! stdin is closed! (we probably did it)"
+        log.err("inConnectionLost! stdin is closed! (we probably did it)")
 
     def errConnectionLost(self):
-        print "errConnectionLost! The child closed their stderr."
+        log.err("errConnectionLost! The child closed their stderr.")
 
     def processExited(self, reason):
-        print "processExited, status %d" % (reason.value.exitCode,)
+        log.msg("Minecraft process exited, code %d" % reason.value.exitCode)
 
     def processEnded(self, reason):
-        print "processEnded, status %d" % (reason.value.exitCode,)
-        print "quitting"
+        log.msg("Stopping reactor.")
         reactor.stop()
 
     def cmd_list_players(self):
