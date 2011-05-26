@@ -3,6 +3,7 @@ Some assorted parent classes, mixins, and helper functions for resources.
 """
 import simplejson
 from twisted.web.resource import Resource
+from zombiepygman.conf import settings
 
 class JSONResourceMixin(Resource):
     """
@@ -42,3 +43,29 @@ class JSONResourceMixin(Resource):
         :returns: A serialized JSON string to return to the user.
         """
         return simplejson.dumps(self.context)
+
+class AuthenticationMixin(Resource):
+    """
+    Use this mixin with routing Resources that have getChild() implemented
+    to help check the security token's validity. Run
+    :meth:`is_valid_security_token`, and if False, return
+    :class:`PermissionDeniedResource` from within your routing resource.
+    """
+    def _is_valid_security_token(self, request):
+        """
+        Checks a request for the correct security token, which is a GET
+        value passed during the API call. Compares to the value in settings.
+
+        :rtype: bool
+        :returns: True if the security token is valid, false if not.
+        """
+        token = request.args.get('security_token', [''])
+        return str(settings.API_SECURITY_TOKEN) == token[0]
+
+class PermissionDeniedResource(JSONResourceMixin):
+    """
+    Return this Resource when an invalid security token is found.
+    """
+    def render_GET(self, request):
+        self.set_error('Invalid API security token.')
+        return self.get_context_json()

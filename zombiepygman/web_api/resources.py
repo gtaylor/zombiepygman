@@ -8,10 +8,10 @@ Quick path cheat-sheat
 
 * /cmd/listconnected - Connected player list.
 """
-from twisted.web.resource import Resource, NoResource
+from twisted.web.resource import NoResource
 from twisted.web.server import NOT_DONE_YET
 from zombiepygman.notchian_wrapper.process import NotchianProcess
-from zombiepygman.web_api.resource_utils import JSONResourceMixin
+from zombiepygman.web_api.resource_utils import JSONResourceMixin, PermissionDeniedResource, AuthenticationMixin
 
 class CmdListConnected(JSONResourceMixin):
     """
@@ -56,19 +56,24 @@ class CmdListConnected(JSONResourceMixin):
         # Un-block the client and return the result.
         request.finish()
 
-class CmdPipingResource(Resource):
+
+class CmdPipingResource(AuthenticationMixin):
     """
     Wrapped commands
 
     Path: /cmd/*
     """
     def getChild(self, path, request):
+        if not self._is_valid_security_token(request):
+            return PermissionDeniedResource()
+        
         if path == 'listconnected':
             return CmdListConnected()
         else:
             return NoResource()
 
-class APIResource(Resource):
+
+class APIResource(AuthenticationMixin):
     """
     Top level
 
@@ -79,4 +84,3 @@ class APIResource(Resource):
             return CmdPipingResource()
         else:
             return NoResource()
-
