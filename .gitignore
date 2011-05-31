@@ -8,6 +8,7 @@ banned-players.txt
 minecraft_server.jar
 ops.txt
 server.log
+server.log.lck
 server.properties
 white-list.txt
 world
