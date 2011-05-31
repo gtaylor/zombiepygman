@@ -9,6 +9,8 @@ Quick path cheat-sheat
 * /cmd/listconnected - Connected player list.
 * /cmd/stop - Stops the Minecraft server, and zombiepygman.
 * /cmd/save-all - Runs a 'save-all'.
+* /cmd/save-on - Enables auto-saving.
+* /cmd/save-off - Disables auto-saving.
 """
 from twisted.web.resource import NoResource
 from twisted.web.server import NOT_DONE_YET
