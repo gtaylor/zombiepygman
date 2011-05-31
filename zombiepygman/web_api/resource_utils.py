@@ -19,6 +19,8 @@ class JSONResourceMixin(Resource):
         """
         Resource.__init__(self)
 
+        # This holds the user's parsed JSON input, if applicable.
+        self.user_input = None
         # The payload we return to the user.
         self.context = {
             'success': True
@@ -35,10 +37,24 @@ class JSONResourceMixin(Resource):
             'message': message,
         }
 
+    def parse_user_input(self, request):
+        """
+        Parses the user's JSON input.
+
+        :returns: The user's input dict, or None if there was no input.
+        """
+        request.content.seek(0)
+        raw_input = request.content.read()
+
+        if raw_input:
+            full_dict = simplejson.loads(raw_input)
+            self.user_input = full_dict.get('payload', None)
+        return self.user_input
+
     def get_context(self, request):
         """
         Adjusts the :attr:`context` attribute to contain whatever data will
-        be returned by :meth:`render_GET`.
+        be returned by :meth:`render_POST`.
         """
         pass
 
@@ -51,13 +67,14 @@ class JSONResourceMixin(Resource):
         """
         return simplejson.dumps(self.context)
 
-    def render_GET(self, request):
+    def render_POST(self, request):
         """
         Finishes up the rendering by returning the JSON dump of the context.
 
         :rtype: str
         :returns: The JSON-serialized context dict.
         """
+        self.parse_user_input(request)
         self.get_context(request)
         return self.get_context_json()
 
@@ -80,13 +97,18 @@ class AuthenticationMixin(Resource):
             # Security disabled, everyone gets in.
             return True
 
-        token = request.args.get('security_token', [''])
-        return str(settings.API_SECURITY_TOKEN) == token[0]
+        # The get POST data (a JSON string).
+        request.content.seek(0)
+        content = request.content.read()
+        # Parse the JSON string.
+        data = simplejson.loads(content)
+        # Compare provided security token to token in conf.py.
+        return str(settings.API_SECURITY_TOKEN) == data['security_token']
 
 class PermissionDeniedResource(JSONResourceMixin):
     """
     Return this Resource when an invalid security token is found.
     """
-    def render_GET(self, request):
+    def render_POST(self, request):
         self.set_error('Invalid API security token.')
         return self.get_context_json()

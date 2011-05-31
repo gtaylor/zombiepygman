@@ -20,13 +20,11 @@ class ZpmAPI(APIBackend):
         """
         return self._call_zpg_api('/cmd/listconnected')
 
-
     def cmd_save_all(self):
         """
         Forces a full save of world data.
         """
         return self._call_zpg_api('/cmd/save-all')
-
     
     def cmd_save_on(self):
         """
@@ -40,3 +38,12 @@ class ZpmAPI(APIBackend):
         Disables auto-saving.
         """
         return self._call_zpg_api('/cmd/save-off')
+
+    def cmd_kick(self, player):
+        """
+        Kicks the given player.
+
+        :param str player: The player to kick.
+        """
+        input = {'player': player}
+        return self._call_zpg_api('/cmd/kick', payload=input)

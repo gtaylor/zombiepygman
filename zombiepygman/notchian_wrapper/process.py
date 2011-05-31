@@ -56,7 +56,9 @@ class NotchianProcess(object):
             mistaken for connection issues due to the undescriptive error
             messages on the client.
         """
-        wait_secs = settings.DEFAULT_SHUTDOWN_DELAY or wait_secs
+        if wait_secs == None:
+            wait_secs = settings.DEFAULT_SHUTDOWN_DELAY
+
         announcement = 'say Server is going down in %d seconds.' % wait_secs
         cls.protocol.send_mc_command(announcement)
         # After however long a wait specified, issue the shutdown command.

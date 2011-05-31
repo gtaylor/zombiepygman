@@ -4,14 +4,17 @@ code paths against obvious bugs and crashes.
 """
 from unittest import TestCase
 from zombiepygman.client import ZpmAPI
+import config
 
 class APITestCase(TestCase):
     """
     Base class for API test cases. Handles setting up a ZpmAPI object.
     """
     def setUp(self):
-        self.api = ZpmAPI()
+        self.api = ZpmAPI(security_token=config.API_SECURITY_TOKEN)
 
+    def _test_for_success(self, result):
+        self.assertTrue(result['success'])
 
 class CmdListConnectedTest(APITestCase):
     """
@@ -19,6 +22,7 @@ class CmdListConnectedTest(APITestCase):
     """
     def test_basic(self):
         result = self.api.cmd_list_connected()
+        self._test_for_success(result)
         self.assertEqual(True, isinstance(result['player_list'], list))
 
 
@@ -27,7 +31,8 @@ class CmdSaveAllTest(APITestCase):
     /cmd/save-all
     """
     def test_basic(self):
-        self.api.cmd_save_all()
+        result = self.api.cmd_save_all()
+        self._test_for_success(result)
 
 
 class CmdSaveOffTest(APITestCase):
@@ -35,7 +40,8 @@ class CmdSaveOffTest(APITestCase):
     /cmd/save-off
     """
     def test_basic(self):
-        self.api.cmd_save_off()
+        result = self.api.cmd_save_off()
+        self._test_for_success(result)
 
 
 class CmdSaveOnTest(APITestCase):
@@ -43,4 +49,14 @@ class CmdSaveOnTest(APITestCase):
     /cmd/save-on
     """
     def test_basic(self):
-        self.api.cmd_save_on()
+        result = self.api.cmd_save_on()
+        self._test_for_success(result)
+
+
+class CmdKickTest(APITestCase):
+    """
+    /cmd/kick
+    """
+    def test_basic(self):
+        result = self.api.cmd_kick('Snagglepants')
+        self._test_for_success(result)

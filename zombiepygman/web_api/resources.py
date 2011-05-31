@@ -23,12 +23,12 @@ class CmdListConnected(JSONResourceMixin):
 
     Path: /cmd/listconnected
 
-    JSON Payload keys
-    -----------------
+    JSON Response keys
+    ------------------
 
     * player_list (list): The list of connected players.
     """
-    def render_GET(self, request):
+    def render_POST(self, request):
         """
         Responds to player list GET requests. The return value is a
         NOT_DONE_YET, which means the client will be kept waiting until we
@@ -116,6 +116,38 @@ class CmdSaveOff(JSONResourceMixin):
         NotchianProcess.protocol.send_mc_command('save-off')
 
 
+class CmdKick(JSONResourceMixin):
+    """
+    Kicks the specified player.
+
+    Path: /cmd/kick
+
+    JSON Payload keys
+    -----------------
+
+    * player (str): The player to kick
+    """
+    def get_context(self, request):
+        """
+        In this case, no context values are set, we just run the command. No
+        output comes back from the command.
+        """
+        missing_dat_msg = "You must specify a player to kick in the 'player' "\
+                           "payload key."
+
+        if not self.user_input:
+            # No user data specified at all.
+            self.set_error(missing_dat_msg)
+            return
+
+        player = self.user_input.get('player', None)
+        if not player:
+            # User data given, but no 'player' key specified.
+            self.set_error(missing_dat_msg)
+            return
+
+        NotchianProcess.protocol.send_mc_command('kick %s' % player)
+
 class CmdPipingResource(AuthenticationMixin):
     """
     Wrapped commands
@@ -129,6 +161,7 @@ class CmdPipingResource(AuthenticationMixin):
         'save-all': CmdSaveAll,
         'save-on': CmdSaveOn,
         'save-off': CmdSaveOff,
+        'kick': CmdKick,
     }
 
     def getChild(self, path, request):
