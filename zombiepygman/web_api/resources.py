@@ -163,7 +163,7 @@ class CmdPardon(SimpleArgCommandResource):
 
 class CmdBanIP(SimpleArgCommandResource):
     """
-    Pardons the specified player.
+    Bans the specified IP address.
 
     Path: /cmd/ban-ip
 
@@ -173,6 +173,21 @@ class CmdBanIP(SimpleArgCommandResource):
     * ip (str): The IP address to ban.
     """
     command = 'ban-ip'
+    input_key = 'ip'
+
+
+class CmdPardonIP(SimpleArgCommandResource):
+    """
+    Pardons the specified IP.
+
+    Path: /cmd/pardon-ip
+
+    JSON Payload keys
+    -----------------
+
+    * ip (str): The IP address to ban.
+    """
+    command = 'pardon-ip'
     input_key = 'ip'
 
         
@@ -193,6 +208,7 @@ class CmdPipingResource(AuthenticationMixin):
         'ban': CmdBan,
         'pardon': CmdPardon,
         'ban-ip': CmdBanIP,
+        'pardon-ip': CmdPardonIP,
     }
 
     def getChild(self, path, request):

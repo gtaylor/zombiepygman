@@ -57,6 +57,15 @@ class ZpmAPI(APIBackend):
         input = {'player': player}
         return self._call_zpg_api('/cmd/ban', payload=input)
 
+    def cmd_pardon(self, player):
+        """
+        Pardons (un-bans) the given player.
+
+        :param str player: The player to ban.
+        """
+        input = {'player': player}
+        return self._call_zpg_api('/cmd/pardon', payload=input)
+
     def cmd_ban_ip(self, ip):
         """
         Bans the given IP address.
@@ -66,11 +75,11 @@ class ZpmAPI(APIBackend):
         input = {'ip': ip}
         return self._call_zpg_api('/cmd/ban-ip', payload=input)
 
-    def cmd_pardon(self, player):
+    def cmd_pardon_ip(self, ip):
         """
-        Pardons (un-bans) the given player.
+        Pardons the given IP address.
 
-        :param str player: The player to ban.
+        :param str ip: The IP address to pardon.
         """
-        input = {'player': player}
-        return self._call_zpg_api('/cmd/pardon', payload=input)
+        input = {'ip': ip}
+        return self._call_zpg_api('/cmd/pardon-ip', payload=input)
