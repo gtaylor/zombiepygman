@@ -7,6 +7,8 @@ Quick path cheat-sheat
 ----------------------
 
 * /cmd/listconnected - Connected player list.
+* /cmd/stop - Stops the Minecraft server, and zombiepygman.
+* /cmd/save-all - Runs a 'save-all'.
 """
 from twisted.web.resource import NoResource
 from twisted.web.server import NOT_DONE_YET
@@ -56,6 +58,61 @@ class CmdListConnected(JSONResourceMixin):
         # Un-block the client and return the result.
         request.finish()
 
+class CmdStop(JSONResourceMixin):
+    """
+    Gracefully shuts down the server.
+
+    Path: /cmd/stop
+    """
+    def get_context(self, request):
+        """
+        In this case, no context values are set, we just run the command. No
+        output comes back from the command.
+        """
+        NotchianProcess.stop_minecraft_server()
+
+
+class CmdSaveAll(JSONResourceMixin):
+    """
+    Runs a 'save-all'.
+
+    Path: /cmd/save-all
+    """
+    def get_context(self, request):
+        """
+        In this case, no context values are set, we just run the command. No
+        output comes back from the command.
+        """
+        NotchianProcess.protocol.send_mc_command('save-all')
+
+
+class CmdSaveOn(JSONResourceMixin):
+    """
+    Runs a 'save-on'.
+
+    Path: /cmd/save-on
+    """
+    def get_context(self, request):
+        """
+        In this case, no context values are set, we just run the command. No
+        output comes back from the command.
+        """
+        NotchianProcess.protocol.send_mc_command('save-on')
+
+
+class CmdSaveOff(JSONResourceMixin):
+    """
+    Runs a 'save-off'.
+
+    Path: /cmd/save-off
+    """
+    def get_context(self, request):
+        """
+        In this case, no context values are set, we just run the command. No
+        output comes back from the command.
+        """
+        NotchianProcess.protocol.send_mc_command('save-off')
+
 
 class CmdPipingResource(AuthenticationMixin):
     """
@@ -63,13 +120,34 @@ class CmdPipingResource(AuthenticationMixin):
 
     Path: /cmd/*
     """
+    # Maps the URL name to the resource.
+    PATHS = {
+        'listconnected': CmdListConnected,
+        'stop': CmdStop,
+        'save-all': CmdSaveAll,
+        'save-on': CmdSaveOn,
+        'save-off': CmdSaveOff,
+    }
+
     def getChild(self, path, request):
+        """
+        Handles matching a URL path to an API method.
+
+        :param str path: The URL path after /cmd/. IE: 'stop', 'save-all'.
+        :rtype: Resource
+        :returns: The Resource for the requested API method.
+        """
         if not self._is_valid_security_token(request):
             return PermissionDeniedResource()
-        
-        if path == 'listconnected':
-            return CmdListConnected()
+
+        # Check the PATHS dict for which resource should be returned for
+        # any given path.
+        resource = self.PATHS.get(path, None)
+        if resource:
+            # Instantiate the matching Resource child and return it.
+            return resource()
         else:
+            # No dict key matching the path was found. 404 it.
             return NoResource()
 
 

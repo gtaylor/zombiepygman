@@ -35,6 +35,13 @@ class JSONResourceMixin(Resource):
             'message': message,
         }
 
+    def get_context(self, request):
+        """
+        Adjusts the :attr:`context` attribute to contain whatever data will
+        be returned by :meth:`render_GET`.
+        """
+        pass
+
     def get_context_json(self):
         """
         Handle construction of the response and return it.
@@ -43,6 +50,16 @@ class JSONResourceMixin(Resource):
         :returns: A serialized JSON string to return to the user.
         """
         return simplejson.dumps(self.context)
+
+    def render_GET(self, request):
+        """
+        Finishes up the rendering by returning the JSON dump of the context.
+
+        :rtype: str
+        :returns: The JSON-serialized context dict.
+        """
+        self.get_context(request)
+        return self.get_context_json()
 
 class AuthenticationMixin(Resource):
     """
