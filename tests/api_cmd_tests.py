@@ -71,6 +71,15 @@ class CmdBanTest(APITestCase):
         self._test_for_success(result)
 
 
+class CmdBanIPTest(APITestCase):
+    """
+    /cmd/ban-ip
+    """
+    def test_basic(self):
+        result = self.api.cmd_ban_ip('192.168.1.1')
+        self._test_for_success(result)
+
+
 class CmdPardonTest(APITestCase):
     """
     /cmd/pardon

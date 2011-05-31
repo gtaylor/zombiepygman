@@ -214,6 +214,39 @@ class CmdPardon(JSONResourceMixin):
 
         NotchianProcess.protocol.send_mc_command('pardon %s' % player)
 
+
+class CmdBanIP(JSONResourceMixin):
+    """
+    Pardons the specified player.
+
+    Path: /cmd/ban-ip
+
+    JSON Payload keys
+    -----------------
+
+    * ip (str): The IP address to ban.
+    """
+    def get_context(self, request):
+        """
+        In this case, no context values are set, we just run the command. No
+        output comes back from the command.
+        """
+        missing_dat_msg = "You must specify an IP to ban in the 'ip' "\
+                           "payload key."
+
+        if not self.user_input:
+            # No user data specified at all.
+            self.set_error(missing_dat_msg)
+            return
+
+        player = self.user_input.get('ip', None)
+        if not player:
+            # User data given, but no 'player' key specified.
+            self.set_error(missing_dat_msg)
+            return
+
+        NotchianProcess.protocol.send_mc_command('ban-ip %s' % player)
+
         
 class CmdPipingResource(AuthenticationMixin):
     """
@@ -231,6 +264,7 @@ class CmdPipingResource(AuthenticationMixin):
         'kick': CmdKick,
         'ban': CmdBan,
         'pardon': CmdPardon,
+        'ban-ip': CmdBanIP,
     }
 
     def getChild(self, path, request):
