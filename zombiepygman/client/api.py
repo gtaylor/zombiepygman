@@ -56,3 +56,12 @@ class ZpmAPI(APIBackend):
         """
         input = {'player': player}
         return self._call_zpg_api('/cmd/ban', payload=input)
+
+    def cmd_pardon(self, player):
+        """
+        Pardons (un-bans) the given player.
+
+        :param str player: The player to ban.
+        """
+        input = {'player': player}
+        return self._call_zpg_api('/cmd/pardon', payload=input)

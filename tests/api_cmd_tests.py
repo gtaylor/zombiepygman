@@ -69,3 +69,12 @@ class CmdBanTest(APITestCase):
     def test_basic(self):
         result = self.api.cmd_ban('Snagglepants')
         self._test_for_success(result)
+
+
+class CmdPardonTest(APITestCase):
+    """
+    /cmd/pardon
+    """
+    def test_basic(self):
+        result = self.api.cmd_pardon('Snagglepants')
+        self._test_for_success(result)
