@@ -83,3 +83,21 @@ class ZpmAPI(APIBackend):
         """
         input = {'ip': ip}
         return self._call_zpg_api('/cmd/pardon-ip', payload=input)
+
+    def cmd_op(self, player):
+        """
+        Makes the specified player an op.
+
+        :param str player: The player to op.
+        """
+        input = {'player': player}
+        return self._call_zpg_api('/cmd/op', payload=input)
+
+    def cmd_deop(self, player):
+        """
+        De-ops the specified player.
+
+        :param str player: The player to de-op.
+        """
+        input = {'player': player}
+        return self._call_zpg_api('/cmd/deop', payload=input)

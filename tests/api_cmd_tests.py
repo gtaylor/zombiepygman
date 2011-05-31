@@ -96,3 +96,21 @@ class CmdPardonIPTest(APITestCase):
     def test_basic(self):
         result = self.api.cmd_pardon_ip('192.168.1.1')
         self._test_for_success(result)
+
+
+class CmdOpTest(APITestCase):
+    """
+    /cmd/op
+    """
+    def test_basic(self):
+        result = self.api.cmd_op('Snagglepants')
+        self._test_for_success(result)
+
+
+class CmdDeOpTest(APITestCase):
+    """
+    /cmd/deop
+    """
+    def test_basic(self):
+        result = self.api.cmd_deop('Snagglepants')
+        self._test_for_success(result)

@@ -190,7 +190,37 @@ class CmdPardonIP(SimpleArgCommandResource):
     command = 'pardon-ip'
     input_key = 'ip'
 
-        
+
+class CmdOp(SimpleArgCommandResource):
+    """
+    Ops the specified player.
+
+    Path: /cmd/op
+
+    JSON Payload keys
+    -----------------
+
+    * player (str): The player to op.
+    """
+    command = 'op'
+    input_key = 'player'
+
+
+class CmdDeOp(SimpleArgCommandResource):
+    """
+    De-ops the specified player.
+
+    Path: /cmd/deop
+
+    JSON Payload keys
+    -----------------
+
+    * player (str): The player to deop.
+    """
+    command = 'deop'
+    input_key = 'player'
+
+
 class CmdPipingResource(AuthenticationMixin):
     """
     Wrapped commands
@@ -209,6 +239,8 @@ class CmdPipingResource(AuthenticationMixin):
         'pardon': CmdPardon,
         'ban-ip': CmdBanIP,
         'pardon-ip': CmdPardonIP,
+        'op': CmdOp,
+        'deop': CmdDeOp,
     }
 
     def getChild(self, path, request):
