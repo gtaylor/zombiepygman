@@ -60,3 +60,12 @@ class CmdKickTest(APITestCase):
     def test_basic(self):
         result = self.api.cmd_kick('Snagglepants')
         self._test_for_success(result)
+
+
+class CmdBanTest(APITestCase):
+    """
+    /cmd/ban
+    """
+    def test_basic(self):
+        result = self.api.cmd_ban('Snagglepants')
+        self._test_for_success(result)

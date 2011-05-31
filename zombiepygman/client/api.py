@@ -47,3 +47,12 @@ class ZpmAPI(APIBackend):
         """
         input = {'player': player}
         return self._call_zpg_api('/cmd/kick', payload=input)
+
+    def cmd_ban(self, player):
+        """
+        Bans the given player.
+
+        :param str player: The player to ban.
+        """
+        input = {'player': player}
+        return self._call_zpg_api('/cmd/ban', payload=input)

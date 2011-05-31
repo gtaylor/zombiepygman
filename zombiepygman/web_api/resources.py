@@ -148,6 +148,38 @@ class CmdKick(JSONResourceMixin):
 
         NotchianProcess.protocol.send_mc_command('kick %s' % player)
 
+class CmdBan(JSONResourceMixin):
+    """
+    Bans the specified player.
+
+    Path: /cmd/ban
+
+    JSON Payload keys
+    -----------------
+
+    * player (str): The player to kick
+    """
+    def get_context(self, request):
+        """
+        In this case, no context values are set, we just run the command. No
+        output comes back from the command.
+        """
+        missing_dat_msg = "You must specify a player to ban in the 'player' "\
+                           "payload key."
+
+        if not self.user_input:
+            # No user data specified at all.
+            self.set_error(missing_dat_msg)
+            return
+
+        player = self.user_input.get('player', None)
+        if not player:
+            # User data given, but no 'player' key specified.
+            self.set_error(missing_dat_msg)
+            return
+
+        NotchianProcess.protocol.send_mc_command('ban %s' % player)
+
 class CmdPipingResource(AuthenticationMixin):
     """
     Wrapped commands
@@ -162,6 +194,7 @@ class CmdPipingResource(AuthenticationMixin):
         'save-on': CmdSaveOn,
         'save-off': CmdSaveOff,
         'kick': CmdKick,
+        'ban': CmdBan,
     }
 
     def getChild(self, path, request):
