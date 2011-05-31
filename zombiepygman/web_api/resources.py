@@ -15,7 +15,7 @@ Quick path cheat-sheat
 from twisted.web.resource import NoResource
 from twisted.web.server import NOT_DONE_YET
 from zombiepygman.notchian_wrapper.process import NotchianProcess
-from zombiepygman.web_api.resource_utils import JSONResourceMixin, PermissionDeniedResource, AuthenticationMixin
+from zombiepygman.web_api.resource_utils import JSONResourceMixin, PermissionDeniedResource, AuthenticationMixin, SimpleArgCommandResource
 
 class CmdListConnected(JSONResourceMixin):
     """
@@ -116,7 +116,7 @@ class CmdSaveOff(JSONResourceMixin):
         NotchianProcess.protocol.send_mc_command('save-off')
 
 
-class CmdKick(JSONResourceMixin):
+class CmdKick(SimpleArgCommandResource):
     """
     Kicks the specified player.
 
@@ -127,29 +127,11 @@ class CmdKick(JSONResourceMixin):
 
     * player (str): The player to kick
     """
-    def get_context(self, request):
-        """
-        In this case, no context values are set, we just run the command. No
-        output comes back from the command.
-        """
-        missing_dat_msg = "You must specify a player to kick in the 'player' "\
-                           "payload key."
-
-        if not self.user_input:
-            # No user data specified at all.
-            self.set_error(missing_dat_msg)
-            return
-
-        player = self.user_input.get('player', None)
-        if not player:
-            # User data given, but no 'player' key specified.
-            self.set_error(missing_dat_msg)
-            return
-
-        NotchianProcess.protocol.send_mc_command('kick %s' % player)
+    command = 'kick'
+    input_key = 'player'
 
 
-class CmdBan(JSONResourceMixin):
+class CmdBan(SimpleArgCommandResource):
     """
     Bans the specified player.
 
@@ -160,29 +142,11 @@ class CmdBan(JSONResourceMixin):
 
     * player (str): The player to ban
     """
-    def get_context(self, request):
-        """
-        In this case, no context values are set, we just run the command. No
-        output comes back from the command.
-        """
-        missing_dat_msg = "You must specify a player to ban in the 'player' "\
-                           "payload key."
-
-        if not self.user_input:
-            # No user data specified at all.
-            self.set_error(missing_dat_msg)
-            return
-
-        player = self.user_input.get('player', None)
-        if not player:
-            # User data given, but no 'player' key specified.
-            self.set_error(missing_dat_msg)
-            return
-
-        NotchianProcess.protocol.send_mc_command('ban %s' % player)
+    command = 'ban'
+    input_key = 'player'
 
 
-class CmdPardon(JSONResourceMixin):
+class CmdPardon(SimpleArgCommandResource):
     """
     Pardons the specified player.
 
@@ -193,29 +157,11 @@ class CmdPardon(JSONResourceMixin):
 
     * player (str): The player to pardon
     """
-    def get_context(self, request):
-        """
-        In this case, no context values are set, we just run the command. No
-        output comes back from the command.
-        """
-        missing_dat_msg = "You must specify a player to pardon in the 'player' "\
-                           "payload key."
-
-        if not self.user_input:
-            # No user data specified at all.
-            self.set_error(missing_dat_msg)
-            return
-
-        player = self.user_input.get('player', None)
-        if not player:
-            # User data given, but no 'player' key specified.
-            self.set_error(missing_dat_msg)
-            return
-
-        NotchianProcess.protocol.send_mc_command('pardon %s' % player)
+    command = 'pardon'
+    input_key = 'player'
 
 
-class CmdBanIP(JSONResourceMixin):
+class CmdBanIP(SimpleArgCommandResource):
     """
     Pardons the specified player.
 
@@ -226,26 +172,8 @@ class CmdBanIP(JSONResourceMixin):
 
     * ip (str): The IP address to ban.
     """
-    def get_context(self, request):
-        """
-        In this case, no context values are set, we just run the command. No
-        output comes back from the command.
-        """
-        missing_dat_msg = "You must specify an IP to ban in the 'ip' "\
-                           "payload key."
-
-        if not self.user_input:
-            # No user data specified at all.
-            self.set_error(missing_dat_msg)
-            return
-
-        player = self.user_input.get('ip', None)
-        if not player:
-            # User data given, but no 'player' key specified.
-            self.set_error(missing_dat_msg)
-            return
-
-        NotchianProcess.protocol.send_mc_command('ban-ip %s' % player)
+    command = 'ban-ip'
+    input_key = 'ip'
 
         
 class CmdPipingResource(AuthenticationMixin):

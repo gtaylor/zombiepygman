@@ -4,6 +4,7 @@ Some assorted parent classes, mixins, and helper functions for resources.
 import simplejson
 from twisted.web.resource import Resource
 from zombiepygman.conf import settings
+from zombiepygman.notchian_wrapper.process import NotchianProcess
 
 class JSONResourceMixin(Resource):
     """
@@ -78,6 +79,38 @@ class JSONResourceMixin(Resource):
         self.get_context(request)
         return self.get_context_json()
 
+
+class SimpleArgCommandResource(JSONResourceMixin):
+    """
+    A very simple wrapper for commands that execute, but whose output is
+    not very important to return.
+    """
+    # The command that this API Resource wraps.
+    command = None
+    # The payload key to check for arguments to the command.
+    input_key = None
+
+    def get_context(self, request):
+        """
+        In this case, no context values are set, we just run the command. No
+        output from the command gets returned (yet).
+        """
+        missing_dat_msg = "You must specify the '%s' payload key." % self.input_key
+
+        if not self.user_input:
+            # No user data specified at all.
+            self.set_error(missing_dat_msg)
+            return
+
+        player = self.user_input.get(self.input_key, None)
+        if not player:
+            # User data given, but no 'player' key specified.
+            self.set_error(missing_dat_msg)
+            return
+
+        NotchianProcess.protocol.send_mc_command('%s %s' % (self.command,
+                                                            player))
+
 class AuthenticationMixin(Resource):
     """
     Use this mixin with routing Resources that have getChild() implemented
@@ -104,6 +137,7 @@ class AuthenticationMixin(Resource):
         data = simplejson.loads(content)
         # Compare provided security token to token in conf.py.
         return str(settings.API_SECURITY_TOKEN) == data['security_token']
+
 
 class PermissionDeniedResource(JSONResourceMixin):
     """
