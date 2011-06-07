@@ -47,6 +47,15 @@ This is currently a little rough, but this will get you running.
   daemon mode, omit the 'n': ``twistd -y server.tac``.
 * Your JSON API is available on port 8001 by default.
 
+Running Unit Tests
+------------------
+
+For developers, you may run the unit tests by doing the following::
+
+    pip install nose
+    # From within your root zombiepygman dir:
+    nosetests
+
 Support
 -------
 
