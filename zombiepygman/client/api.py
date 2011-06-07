@@ -101,3 +101,9 @@ class ZpmAPI(APIBackend):
         """
         input = {'player': player}
         return self._call_zpg_api('/cmd/deop', payload=input)
+
+    def get_playerlocs(self):
+        """
+        Gets a list of players and their respective coordinates.
+        """
+        return self._call_zpg_api('/data/playerlocs')
