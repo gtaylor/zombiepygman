@@ -3,6 +3,7 @@ Some assorted parent classes, mixins, and helper functions for resources.
 """
 import simplejson
 from twisted.web.resource import Resource
+from twisted.web.resource import NoResource
 from zombiepygman.conf import settings
 from zombiepygman.notchian_wrapper.process import NotchianProcess
 
@@ -140,6 +141,39 @@ class AuthenticationMixin(Resource):
         data = simplejson.loads(content)
         # Compare provided security token to token in conf.py.
         return str(settings.API_SECURITY_TOKEN) == data['security_token']
+
+
+class SecuredRoutingResource(AuthenticationMixin):
+    """
+    Builds on the AuthenticationMixin to offer secure routing of resources
+    based on the key values in the :attr:`PATHS` dict. The ``path`` arg to
+    getChild is used to perform a lookup on the :attr:`PATHS` dict,
+    instantiating and returning the value (as Resource sub-class).
+    """
+    PATHS = {
+        #'urlname': ResourceClassRef,
+    }
+
+    def getChild(self, path, request):
+        """
+        Handles matching a URL path to an API method.
+
+        :param str path: The URL path after /cmd/. IE: 'stop', 'save-all'.
+        :rtype: Resource
+        :returns: The Resource for the requested API method.
+        """
+        if not self._is_valid_security_token(request):
+            return PermissionDeniedResource()
+
+        # Check the PATHS dict for which resource should be returned for
+        # any given path.
+        resource = self.PATHS.get(path)
+        if resource:
+            # Instantiate the matching Resource child and return it.
+            return resource()
+        else:
+            # No dict key matching the path was found. 404 it.
+            return NoResource()
 
 
 class PermissionDeniedResource(JSONResourceMixin):

@@ -8,10 +8,9 @@ Quick path cheat-sheat
 * /cmd/save-on - Enables auto-saving.
 * /cmd/save-off - Disables auto-saving.
 """
-from twisted.web.resource import NoResource
 from twisted.web.server import NOT_DONE_YET
 from zombiepygman.notchian_wrapper.process import NotchianProcess
-from zombiepygman.web_api.resource_utils import JSONResourceMixin, PermissionDeniedResource, AuthenticationMixin, SimpleCommandResource
+from zombiepygman.web_api.resource_utils import JSONResourceMixin, SimpleCommandResource, SecuredRoutingResource
 
 class CmdListConnected(JSONResourceMixin):
     """
@@ -198,7 +197,7 @@ class CmdDeOp(SimpleCommandResource):
     input_key = 'player'
 
 
-class CmdPipingResource(AuthenticationMixin):
+class CmdPipingResource(SecuredRoutingResource):
     """
     Wrapped commands
 
@@ -219,24 +218,3 @@ class CmdPipingResource(AuthenticationMixin):
         'op': CmdOp,
         'deop': CmdDeOp,
         }
-
-    def getChild(self, path, request):
-        """
-        Handles matching a URL path to an API method.
-
-        :param str path: The URL path after /cmd/. IE: 'stop', 'save-all'.
-        :rtype: Resource
-        :returns: The Resource for the requested API method.
-        """
-        if not self._is_valid_security_token(request):
-            return PermissionDeniedResource()
-
-        # Check the PATHS dict for which resource should be returned for
-        # any given path.
-        resource = self.PATHS.get(path)
-        if resource:
-            # Instantiate the matching Resource child and return it.
-            return resource()
-        else:
-            # No dict key matching the path was found. 404 it.
-            return NoResource()
