@@ -1,8 +1,4 @@
 """
-This JSON API is primarily used for executing Minecraft server commands from
-a remote TCP connection. The :class:`APIResource` class is the top-level
-entry in here where everything gets started from.
-
 Quick path cheat-sheat
 ----------------------
 
@@ -59,6 +55,7 @@ class CmdListConnected(JSONResourceMixin):
         request.write(self.get_context_json())
         # Un-block the client and return the result.
         request.finish()
+
 
 class CmdStop(SimpleCommandResource):
     """
@@ -221,49 +218,6 @@ class CmdPipingResource(AuthenticationMixin):
         'pardon-ip': CmdPardonIP,
         'op': CmdOp,
         'deop': CmdDeOp,
-    }
-
-    def getChild(self, path, request):
-        """
-        Handles matching a URL path to an API method.
-
-        :param str path: The URL path after /cmd/. IE: 'stop', 'save-all'.
-        :rtype: Resource
-        :returns: The Resource for the requested API method.
-        """
-        if not self._is_valid_security_token(request):
-            return PermissionDeniedResource()
-
-        # Check the PATHS dict for which resource should be returned for
-        # any given path.
-        resource = self.PATHS.get(path, None)
-        if resource:
-            # Instantiate the matching Resource child and return it.
-            return resource()
-        else:
-            # No dict key matching the path was found. 404 it.
-            return NoResource()
-
-
-class DataPlayerLocs(JSONResourceMixin):
-    """
-    Returns a list of players and their locations.
-
-    Path: /data/playerlocs
-    """
-    def get_context(self, request):
-        print "YAY"
-
-
-class DataResource(AuthenticationMixin):
-    """
-    General server/world data.
-
-    Path: /data/*
-    """
-    # Maps the URL name to the resource.
-    PATHS = {
-        'playerlocs': DataPlayerLocs,
         }
 
     def getChild(self, path, request):
@@ -279,25 +233,10 @@ class DataResource(AuthenticationMixin):
 
         # Check the PATHS dict for which resource should be returned for
         # any given path.
-        resource = self.PATHS.get(path, None)
+        resource = self.PATHS.get(path)
         if resource:
             # Instantiate the matching Resource child and return it.
             return resource()
         else:
             # No dict key matching the path was found. 404 it.
-            return NoResource()
-
-
-class APIResource(AuthenticationMixin):
-    """
-    Top level
-
-    Path: /
-    """
-    def getChild(self, path, request):
-        if path == 'cmd':
-            return CmdPipingResource()
-        elif path == 'data':
-            return DataResource()
-        else:
             return NoResource()
