@@ -15,7 +15,7 @@ Quick path cheat-sheat
 from twisted.web.resource import NoResource
 from twisted.web.server import NOT_DONE_YET
 from zombiepygman.notchian_wrapper.process import NotchianProcess
-from zombiepygman.web_api.resource_utils import JSONResourceMixin, PermissionDeniedResource, AuthenticationMixin, SimpleArgCommandResource
+from zombiepygman.web_api.resource_utils import JSONResourceMixin, PermissionDeniedResource, AuthenticationMixin, SimpleCommandResource
 
 class CmdListConnected(JSONResourceMixin):
     """
@@ -60,63 +60,43 @@ class CmdListConnected(JSONResourceMixin):
         # Un-block the client and return the result.
         request.finish()
 
-class CmdStop(JSONResourceMixin):
+class CmdStop(SimpleCommandResource):
     """
     Gracefully shuts down the server.
 
     Path: /cmd/stop
     """
-    def get_context(self, request):
-        """
-        In this case, no context values are set, we just run the command. No
-        output comes back from the command.
-        """
-        NotchianProcess.stop_minecraft_server()
+    command = 'stop'
 
 
-class CmdSaveAll(JSONResourceMixin):
+class CmdSaveAll(SimpleCommandResource):
     """
     Runs a 'save-all'.
 
     Path: /cmd/save-all
     """
-    def get_context(self, request):
-        """
-        In this case, no context values are set, we just run the command. No
-        output comes back from the command.
-        """
-        NotchianProcess.protocol.send_mc_command('save-all')
+    command = 'save-all'
 
 
-class CmdSaveOn(JSONResourceMixin):
+class CmdSaveOn(SimpleCommandResource):
     """
     Runs a 'save-on'.
 
     Path: /cmd/save-on
     """
-    def get_context(self, request):
-        """
-        In this case, no context values are set, we just run the command. No
-        output comes back from the command.
-        """
-        NotchianProcess.protocol.send_mc_command('save-on')
+    command = 'save-on'
 
 
-class CmdSaveOff(JSONResourceMixin):
+class CmdSaveOff(SimpleCommandResource):
     """
     Runs a 'save-off'.
 
     Path: /cmd/save-off
     """
-    def get_context(self, request):
-        """
-        In this case, no context values are set, we just run the command. No
-        output comes back from the command.
-        """
-        NotchianProcess.protocol.send_mc_command('save-off')
+    command = 'save-off'
 
 
-class CmdKick(SimpleArgCommandResource):
+class CmdKick(SimpleCommandResource):
     """
     Kicks the specified player.
 
@@ -131,7 +111,7 @@ class CmdKick(SimpleArgCommandResource):
     input_key = 'player'
 
 
-class CmdBan(SimpleArgCommandResource):
+class CmdBan(SimpleCommandResource):
     """
     Bans the specified player.
 
@@ -146,7 +126,7 @@ class CmdBan(SimpleArgCommandResource):
     input_key = 'player'
 
 
-class CmdPardon(SimpleArgCommandResource):
+class CmdPardon(SimpleCommandResource):
     """
     Pardons the specified player.
 
@@ -161,7 +141,7 @@ class CmdPardon(SimpleArgCommandResource):
     input_key = 'player'
 
 
-class CmdBanIP(SimpleArgCommandResource):
+class CmdBanIP(SimpleCommandResource):
     """
     Bans the specified IP address.
 
@@ -176,7 +156,7 @@ class CmdBanIP(SimpleArgCommandResource):
     input_key = 'ip'
 
 
-class CmdPardonIP(SimpleArgCommandResource):
+class CmdPardonIP(SimpleCommandResource):
     """
     Pardons the specified IP.
 
@@ -191,7 +171,7 @@ class CmdPardonIP(SimpleArgCommandResource):
     input_key = 'ip'
 
 
-class CmdOp(SimpleArgCommandResource):
+class CmdOp(SimpleCommandResource):
     """
     Ops the specified player.
 
@@ -206,7 +186,7 @@ class CmdOp(SimpleArgCommandResource):
     input_key = 'player'
 
 
-class CmdDeOp(SimpleArgCommandResource):
+class CmdDeOp(SimpleCommandResource):
     """
     De-ops the specified player.
 

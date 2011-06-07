@@ -80,7 +80,7 @@ class JSONResourceMixin(Resource):
         return self.get_context_json()
 
 
-class SimpleArgCommandResource(JSONResourceMixin):
+class SimpleCommandResource(JSONResourceMixin):
     """
     A very simple wrapper for commands that execute, but whose output is
     not very important to return.
@@ -97,19 +97,22 @@ class SimpleArgCommandResource(JSONResourceMixin):
         """
         missing_dat_msg = "You must specify the '%s' payload key." % self.input_key
 
-        if not self.user_input:
+        if self.input_key and not self.user_input:
             # No user data specified at all.
             self.set_error(missing_dat_msg)
             return
 
-        player = self.user_input.get(self.input_key, None)
-        if not player:
-            # User data given, but no 'player' key specified.
-            self.set_error(missing_dat_msg)
-            return
+        if self.input_key:
+            arguments = self.user_input.get(self.input_key, None)
+            if not input:
+                # User data given, but no input key specified.
+                self.set_error(missing_dat_msg)
+                return
+        else:
+            arguments = ''
 
         NotchianProcess.protocol.send_mc_command('%s %s' % (self.command,
-                                                            player))
+                                                            arguments))
 
 class AuthenticationMixin(Resource):
     """
