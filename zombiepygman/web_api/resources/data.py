@@ -21,7 +21,9 @@ class DataPlayerLocs(JSONResourceMixin):
       asking for trouble.
 
     .. warning: Make sure this call is only accessible to the website/app. There
-        is very little here preventing all kinds of un-fun attacks.
+        is very little here preventing all kinds of un-fun attacks. Keeping
+        authentication enabled, in conjunction with firewalling is strongly
+        suggested for all but the most trusted environments.
 
     Response payload
     ----------------

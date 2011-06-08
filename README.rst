@@ -43,6 +43,14 @@ This is currently a little rough, but this will get you running.
   minecraft_server directory.
 * Copy ``config_example.py`` to ``config.py`` in your root zombiepygman
   directory. Edit the value for ``API_SECURITY_TOKEN`` at the very least.
+* Take a minute to set up firewall rules to prevent outside access to
+  zombiepygman. If the API will be consumed on the same machine, we recommend
+  only allowing access via loopback on your API port (8001 by default). Failing
+  to do this is just asking for someone to do mean things to you.
+
+Starting zombiepygman
+---------------------
+
 * Start zombiepygman: ``twistd -ny server.tac``. If you want to run in
   daemon mode, omit the 'n': ``twistd -y server.tac``.
 * Your JSON API is available on port 8001 by default.
