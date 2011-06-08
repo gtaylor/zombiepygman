@@ -1,12 +1,8 @@
 """
-Quick path cheat-sheat
-----------------------
-
-* /cmd/listconnected - Connected player list.
-* /cmd/stop - Stops the Minecraft server, and zombiepygman.
-* /cmd/save-all - Runs a 'save-all'.
-* /cmd/save-on - Enables auto-saving.
-* /cmd/save-off - Disables auto-saving.
+The following resources are wrappers for minecraft_server.jar's various
+console commands. Using these resources, you may run the commands remotely.
+In general, the resulting output is not returned for most of these calls,
+except for those whose only purpose is to retrieve data (ie. /list command).
 """
 from twisted.web.server import NOT_DONE_YET
 from zombiepygman.notchian_wrapper.process import NotchianProcess

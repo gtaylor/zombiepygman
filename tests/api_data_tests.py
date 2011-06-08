@@ -22,3 +22,4 @@ class DataPlayerLocsTest(APITestCase):
     """
     def test_basic(self):
         result = self.api.get_playerlocs()
+        self.assertIsInstance(result, dict, msg="Result not a dict.")

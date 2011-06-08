@@ -1,3 +1,4 @@
 twisted
 txrestapi
 simplejson
+nbt
