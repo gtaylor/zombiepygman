@@ -53,7 +53,7 @@ class JSONResourceMixin(Resource):
             self.user_input = full_dict.get('payload', None)
         return self.user_input
 
-    def get_context(self, request):
+    def set_context(self, request):
         """
         Adjusts the :attr:`context` attribute to contain whatever data will
         be returned by :meth:`render_POST`.
@@ -77,7 +77,7 @@ class JSONResourceMixin(Resource):
         :returns: The JSON-serialized context dict.
         """
         self.parse_user_input(request)
-        self.get_context(request)
+        self.set_context(request)
         return self.get_context_json()
 
 
@@ -91,7 +91,7 @@ class SimpleCommandResource(JSONResourceMixin):
     # The payload key to check for arguments to the command.
     input_key = None
 
-    def get_context(self, request):
+    def set_context(self, request):
         """
         In this case, no context values are set, we just run the command. No
         output from the command gets returned (yet).

@@ -27,7 +27,7 @@ class DataPlayerLocs(JSONResourceMixin):
 
     Path: /data/playerlocs
     """
-    def get_context(self, request):
+    def set_context(self, request):
         """
         Goes through the minecraft_server/world/players dir, retrieves one
         or more player locations. Returns in a JSON dict.
