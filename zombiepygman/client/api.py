@@ -32,7 +32,6 @@ class ZpmAPI(APIBackend):
         """
         return self._call_zpg_api('/cmd/save-on')
 
-
     def cmd_save_off(self):
         """
         Disables auto-saving.
