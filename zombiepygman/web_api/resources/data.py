@@ -55,6 +55,7 @@ class DataPlayerLocs(JSONResourceMixin):
 
         requested_players = self.user_input.get('for_players')
         if isinstance(requested_players, list):
+            # User specified a list of usernames to get the locations of.
             for username in requested_players:
                 if '.' in username or '/' in username:
                     # TODO: Secure this up, you lazy fool.
@@ -71,6 +72,8 @@ class DataPlayerLocs(JSONResourceMixin):
                     continue
 
         else:
+            # No usernames specified, return all recorded last locations.
+            # WARNING: This can get expensive with heavily-populated servers!
             for root, dirs, files in os.walk(player_dir):
                 for file in files:
                     if not file.endswith('.dat'):
