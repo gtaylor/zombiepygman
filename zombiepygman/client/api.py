@@ -102,8 +102,13 @@ class ZpmAPI(APIBackend):
         input = {'player': player}
         return self._call_zpg_api('/cmd/deop', payload=input)
 
-    def get_playerlocs(self):
+    def get_playerlocs(self, for_players=None):
         """
         Gets a list of players and their respective coordinates.
+
+        :param list for_players: A list of case-sensitive usernames to get
+            coordinates for. Results won't be returned for usernames that
+            have no player.dat matches.
         """
-        return self._call_zpg_api('/data/playerlocs')
+        input = {'for_players': for_players}
+        return self._call_zpg_api('/data/playerlocs', payload=input)

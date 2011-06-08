@@ -21,5 +21,19 @@ class DataPlayerLocsTest(APITestCase):
     /data/playerlocs
     """
     def test_basic(self):
+        """
+        Just run through the code path to make sure we're exceptionless.
+        """
         result = self.api.get_playerlocs()
-        self.assertIsInstance(result, dict, msg="Result not a dict.")
+        self.assertIsInstance(result, dict)
+        self.assertIsInstance(result['player_locs'], dict)
+
+    def test_invalid_username(self):
+        """
+        Given completely BS username(s), an empty dict value will be returned.
+        Match-less usernames will fail silently.
+        """
+        players = ['blartyblartfast', 'someotherguy']
+        result = self.api.get_playerlocs(for_players=players)
+        self.assertIsInstance(result, dict)
+        self.assertEqual({}, result['player_locs'])
