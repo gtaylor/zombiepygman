@@ -70,7 +70,7 @@ is an example of how to use it::
 
     # This has to match on both client and server.
     token = 'YOUR_TOKEN_HERE'
-    api = ZpmAPI(security_token=token)
+    api = ZpmAPI(api_host='http://localhost:8001', security_token=token)
 
     # An example instance of piping commands into the server console and
     # retrieving the output. All API calls return dicts from JSON.
